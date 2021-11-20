@@ -1,0 +1,104 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+    {% include 'includes/meta.html' %}
+
+    {% block extra_meta %}
+    {% endblock %}
+
+    {% block corecss %}
+        {% include íncludes/externalcss.html %}
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    {% endblock %}
+
+    {% block extra_css %}
+    {% endblock %}
+
+    {% block corejs %}
+        <script src="https://kit.fontawesome.com/d4489e94b7.js" crossorigin="anonymous"></script>
+    {% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+        <title>Plantastic {% block extra_title %}{% endblock %}</title>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-light bg-light pb-0">
+            <div class="container-fluid">
+                <!-- toggle button -->
+                <a class="navbar-brand logo-font" href="{% url 'home' %}">Plantastic</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ms-auto align-middle">
+                    <li>
+                        <form method="GET" action="{% url 'products' %}"  class="d-flex p-1">
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                        <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <div class="text-center">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle fa-lg"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_superuser %}
+                            <li><a class=" dropdown-item" href="{% url 'add_product' %}">Plant Management</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Sign Up</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Sign In</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    </li>
+                        <li class="nav-item dropdown">
+                        <a class="nav-link" href="{% url 'view_basket' %}">
+                            <div class="text-center">
+                            <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                            <p>
+                                {% if grand_total %}
+                                    €{{ grand_total|floatformat:2 }}
+                                {% else %}
+                                    €0.00
+                                {% endif %}
+                            </p>
+                            </div>
+                        </a>
+                        </li>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
+            <div id="delivery-banner" class="col-12 text-center">
+            <div class="col bg-black text-white">
+                <h4 class="logo-font my-1">Free delivery on orders over €{{ free_delivery_threshold }}!</h4>
+            </div>
+            </div>    
+        </header>
+
+        {% if messages %}
+        <div class="message-container"></div>
+        {% endif %}
+
+        {% block page_header %}
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+        {% block postloadjs %}
+            {% include 'includes/externaljs.html' %} 
+        {% endblock %}
+
+    </body>
+</html>
